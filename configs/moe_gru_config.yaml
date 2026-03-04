@@ -1,0 +1,57 @@
+model:
+  _target_: vol_forecasting.models.moe_gru.MoEGRU
+  lookback: 900
+  n_experts: 16
+  top_k: 4
+  hidden_size: 32
+  d_proj: 32
+  num_layers: 1
+  dropout: 0.3
+  head_units: [32]
+  aux_loss_weight: 0.01
+
+data:
+  path: /tmp/features.parquet
+  products: [s, p]
+  dataset_version: v2
+  train_frac: 0.8
+  val_frac: 0.1
+  data_frac: 0.3
+
+training:
+  horizon: 15m
+  stride: 30
+  batch_size: 1024
+  lr: 0.0001
+  weight_decay: 0.1
+  epochs: 30
+  patience: 5
+  use_compile: true
+  loss_mode: mixed_mse        # log_mse | raw_mse | raw_huber | mixed_mse | raw_rmse
+  loss_alpha: 0.50           # mixed_mse only: 1.0=pure log, 0.0=pure level-space
+  target_clip: 5.0          # clip normalized targets to [-x, x] (null = disabled)
+  variable_horizon:
+    enabled: true
+    min_horizon: 1
+    max_horizon: 900
+  pricing_head:
+    enabled: true
+    bce_weight: 0.1
+    period_len: 900
+    kwargs:
+      hidden_units: [64, 32]
+      dropout: 0.4
+  lgbm_pricer:
+    enabled: true
+    use_realized_var: false   # true = oracle mode (use true forward RV for train/val pricing features)
+
+device: cuda
+save_path: null
+ntfy_channel: WAM_RESEARCH
+pricer_path: /home/hice1/mshah415/work/btc_research/vol_forecasting/pricing/configs/fourier.json
+pricer_period_min: 15
+run_dir: null
+jsu_params_path: /home/hice1/mshah415/work/btc_research/vol_forecasting/pricing/configs/jsu.csv 
+
+
+

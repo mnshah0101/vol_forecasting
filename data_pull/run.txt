@@ -1,0 +1,40 @@
+python download.py \
+    --exchange BINANCE_FUTURES \
+    --instruments BTC-USDT-PERP  \
+    --start 2022-11-15 \
+    --end 2026-02-25
+
+
+
+
+
+
+python download.py \
+    --exchange BINANCE  \
+    --instruments BTC-USDT \
+    --start 2022-11-15 \
+    --end 2026-02-25
+
+
+
+python download.py \
+    --exchange COINBASE  \
+    --instruments BTC-USDT \
+    --start 2022-11-15 \
+    --end 2026-02-25
+
+
+
+
+ python data_pull/pipeline_new.py \                                                                                      
+    --inputs s:/tmp/BTC_USDT.parquet p:/tmp/BTC_USDT_PERP.parquet c:/tmp/BTC_USD_COINBASE.parquet \                                                           
+    --output features.parquet  
+
+
+python pipeline.py \
+    --inputs s:/tmp/BTC_USDT.parquet p:/tmp/BTC_USDT_PERP.parquet   \
+    --output /tmp/features.parquet \
+    --eval
+
+
+

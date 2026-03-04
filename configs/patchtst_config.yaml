@@ -1,0 +1,44 @@
+model:
+  _target_: vol_forecasting.models.patchtst.PatchTST
+  lookback: 1800
+  patch_len: 60
+  stride: 60
+  d_model: 64
+  nhead: 4
+  num_layers: 3
+  dim_feedforward: 128
+  dropout: 0.3
+  head_units: [32]
+
+data:
+  path: /home/hice1/mshah415/work/btc_research/vol_forecasting/data/output.parquet
+  products: [s, p, e]
+  train_frac: 0.8
+  val_frac: 0.1
+
+training:
+  horizon: 15m
+  stride: 1
+  batch_size: 4096
+  lr: 1e-3
+  weight_decay: 0.01
+  epochs: 30
+  patience: 5
+  use_compile: false
+  loss_mode: log_mse        # log_mse | raw_mse | raw_huber | mixed_mse
+  loss_alpha: 1.0           # mixed_mse only: 1.0=pure log, 0.0=pure level-space
+  target_clip: null          # clip normalized targets to [-x, x] (null = disabled)
+  variable_horizon:
+    enabled: false
+    min_horizon: 1
+    max_horizon: 900
+  pricing_head:
+    enabled: false
+    bce_weight: 0.1
+    period_len: 900
+    kwargs:
+      hidden_units: [64, 32]
+      dropout: 0.1
+
+device: cuda
+save_path: null

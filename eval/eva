@@ -1,0 +1,1 @@
+python -m vol_forecasting.models.lightgbm_v2  --data /tmp/features.parquet --horizon 15m  --product s  --data-frac 0.10 --target-clip 5.0  --stride 30
